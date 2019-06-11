@@ -27,15 +27,13 @@ class MainContainer extends Component {
   }
 
   addStock = (stock) => {
-    let arr = this.state.stocks.filter(s => s.id !== stock.id)
+    let arr = this.state.displayStocks.filter(s => s.id !== stock.id)
 
-    let pArr = this.state.portfolioStock
+    let pArr = this.state.displayPortfolioStock
     pArr.push(stock)
 
     this.setState({
-      stocks: arr,
       displayStocks: arr,
-      portfolioStock: pArr,
       displayPortfolioStock: pArr
     })
 
@@ -43,17 +41,15 @@ class MainContainer extends Component {
 
   removeStock = (removeStock) => {
     
-    let arr = this.state.portfolioStock.filter(stock => stock.id !== removeStock.id)
+    let arr = this.state.displayPortfolioStock.filter(stock => stock.id !== removeStock.id)
 
-    let sArr = this.state.stocks
+    let sArr = this.state.displayStocks
     sArr.push(removeStock)
     sArr.sort((a,b) => a.id<b.id ? -1 : 1) //sorting so that we can get the stocks in the original order
-
+      
     this.setState({
-      stock: sArr,
       displayStocks: sArr,
-      portfolioStock: arr,
-      displayStocks: arr
+      displayPortfolioStock: arr
     })
   }
 
@@ -62,12 +58,12 @@ class MainContainer extends Component {
       let resultPArr
       switch(e.target.value){
         case 'Alphabetically':
-            resultSArr = this.state.stocks.sort((a,b) => a.name<b.name ? -1 : 1 )
-            resultPArr = this.state.portfolioStock.sort((a,b) => a.name<b.name ? -1 : 1 )
+            resultSArr = this.state.displayStocks.sort((a,b) => a.name<b.name ? -1 : 1 )
+            resultPArr = this.state.displayPortfolioStock.sort((a,b) => a.name<b.name ? -1 : 1 )
             break;
         case 'Price':
-            resultSArr = this.state.stocks.sort((a,b) => a.price<b.price ? -1 : 1 )
-            resultPArr = this.state.portfolioStock.sort((a,b) => a.price<b.price ? -1 : 1 )
+            resultSArr = this.state.displayStocks.sort((a,b) => a.price<b.price ? -1 : 1 )
+            resultPArr = this.state.displayPortfolioStock.sort((a,b) => a.price<b.price ? -1 : 1 )
             break;
 
         // case 'Tech':
@@ -84,9 +80,10 @@ class MainContainer extends Component {
         //     break;
         
         default:
+          debugger
             resultSArr = this.state.stocks.filter(stock => stock.type === e.target.value )
             resultPArr = this.state.portfolioStock.filter(stock => stock.type === e.target.value )
-          console.log('Wrong Choice!!!')
+          
       }
 
       this.setState({
