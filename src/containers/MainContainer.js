@@ -5,14 +5,13 @@ import SearchBar from '../components/SearchBar'
 
 class MainContainer extends Component {
 
-  constructor(){
-    super()
-    this.state = {
+  state = {
       stocks: [],
-      displayStocks: [],
-      portfolioStocks: []
+      portfolioIds: [],
+      filter: 'All',
+      sort: 'None'
     }
-  }
+
 
   componentDidMount(){
     fetch("http://localhost:3000/stocks")
@@ -20,68 +19,62 @@ class MainContainer extends Component {
     .then(data => { // check data
       this.setState({
         stocks: data,
-        displayStocks: data
       })
     })
   }
 
-  addPortfolio = (stock) => {
+  addPortfolio = (id) => {
+    if (!this.state.portfolioIds.find(pId => pId === id)){
+      this.setState({
+        portfolioIds: [...this.state.portfolioIds, id]
+      })
+    }
+  }
+
+  removeStock = (id) => {
     this.setState({
-      portfolioStocks: [...this.state.portfolioStocks, stock]
+      portfolioIds: this.state.portfolioIds.filter(s => s !== id) 
     })
   }
 
-  removeStock = (stock) => {
-    this.setState({
-      portfolioStocks: this.state.portfolioStocks.filter(s => s !== stock) 
-    })
+  updateFilter = type  => {
+    this.setState({ filter: type })
+  }
+
+  updateSort = sortBy => {
+    this.setState({ sort: sortBy })
   }
   
-  filterStocks = (type) => {
+  calculateDisplayStocks = () => {
+    let filteredStocks = [...this.state.stocks]
+    if(this.state.filter !== "All"){
+      filteredStocks =  filteredStocks.filter(stock => stock.type === this.state.filter)        
+    } 
 
-    if(type !== "All"){
-      this.setState({
-        displayStocks: this.state.stocks.filter(stock => stock.type === type)        
-      })
-    }else{
-      this.setState({
-        displayStocks: this.state.stocks
-      })
-    }
-  }
-
-  sortStocks = (sortBy) => {
-    let arr = []
-    switch(sortBy){
+    switch(this.state.sort){
       case "Alphabetically":
-        arr = this.state.displayStocks.sort((a,b) => a.name > b.name ? 1 : -1)
-        break;
+        return filteredStocks.sort((a,b) => a.name > b.name ? 1 : -1)
       case "Price":
-          arr = this.state.displayStocks.sort((a,b) => a.price > b.price ? 1 : -1)
-        break;
+          return filteredStocks.sort((a,b) => a.price > b.price ? 1 : -1)
       default:
-        console.log("Wrong choice")
+        return filteredStocks
     }
-    this.setState({
-      displayStocks: arr
-    })
   }
+
 
   render() {
+    let portfolioStocks = this.state.portfolioIds.map(id => this.state.stocks.find(stock => stock.id === id))
+    let displayStocks = this.calculateDisplayStocks()
+
     return (
       <div>
-        <SearchBar filterStocks={this.filterStocks} sortStocks={this.sortStocks}/>
-
+        <SearchBar filter={this.state.filter} sort={this.state.sort} updateFilter={this.updateFilter} updateSort={this.updateSort}/>
           <div className="row">
             <div className="col-8">
-
-              <StockContainer stocks={this.state.displayStocks} addPortfolio={this.addPortfolio}/>
-
+              <StockContainer stocks={displayStocks} addPortfolio={this.addPortfolio}/>
             </div>
             <div className="col-4">
-
-              <PortfolioContainer stocks={this.state.portfolioStocks} removeStock={this.removeStock}/>
-
+              <PortfolioContainer stocks={portfolioStocks} removeStock={this.removeStock}/>
             </div>
           </div>
       </div>
