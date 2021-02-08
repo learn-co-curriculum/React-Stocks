@@ -4,21 +4,26 @@ import PortfolioContainer from './PortfolioContainer'
 import SearchBar from '../components/SearchBar'
 
 class MainContainer extends Component {
-
+  state = {
+    sellingAStock: true
+  }
   render() {
     return (
       <div>
-        <SearchBar/>
+        <SearchBar 
+          filterByType={this.props.filterByType} 
+          sortStockBy={this.props.sortStockBy}
+          isChecked={this.props.isChecked}/>
 
           <div className="row">
             <div className="col-8">
 
-              <StockContainer/>
+              <StockContainer handleBuyingAStock={this.props.handleBuyingAStock} stocks={this.props.stocks}/>
 
             </div>
             <div className="col-4">
 
-              <PortfolioContainer/>
+              <PortfolioContainer sellAStock ={this.state.sellingAStock} handleSellingAStock={this.props.handleSellingAStock} portfolio={this.props.portfolio}/>
 
             </div>
           </div>
