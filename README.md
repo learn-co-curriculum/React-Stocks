@@ -1,6 +1,6 @@
 ## Flatiron Stock Exchange
 
-![Clone Down Repo to See GIF](./stocks.gif)
+![Clone Down Repo to See GIF](https://raw.githubusercontent.com/learn-co-curriculum/React-Stocks/master/stocks.gif)
 
 Welcome to the Flatiron Stock Exchange!
 Today, you are a broker who is trying to better organize the stocks available on the Flatiron Stock Market.
